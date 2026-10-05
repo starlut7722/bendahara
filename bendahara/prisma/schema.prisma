@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Bendahara - aplikasi pencatat keuangan sederhana.
+/// Tabel utama: transactions. Saldo dihitung dari data transaksi
+/// (total pemasukan - total pengeluaran), tidak disimpan manual.
+model Transaction {
+  id          String   @id @default(cuid())
+  date        DateTime // tanggal transaksi (bukan created_at)
+  type         String   // "income" | "expense"
+  description String
+  amount      Int      // nominal dalam Rupiah, disimpan sebagai angka
+  category    String   // sumber (income) atau kategori (expense)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([type])
+  @@index([date])
+  @@map("transactions")
+}
