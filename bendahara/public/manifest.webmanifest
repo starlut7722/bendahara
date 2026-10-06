@@ -1,7 +1,7 @@
 {
-  "name": "Bendahara",
-  "short_name": "Bendahara",
-  "description": "Aplikasi bendahara sederhana untuk mencatat pemasukan, pengeluaran, transaksi, laporan, dan saldo keuangan.",
+  "name": "Kas OSIS Adikara Darmalaksana",
+  "short_name": "Kas OSIS",
+  "description": "Aplikasi kas resmi OSIS Adikara Darmalaksana untuk mencatat pemasukan, pengeluaran, transaksi, laporan, dan saldo keuangan.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

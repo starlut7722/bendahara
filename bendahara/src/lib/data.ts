@@ -406,14 +406,14 @@ async function countPrisma(): Promise<number> {
 //  QUERY: SEED DEMO (hanya jika tabel kosong)
 // =================================================================
 const DEMO_DATA: Array<Omit<TxInput, "date"> & { date: string }> = [
-  { date: "2026-10-01", type: "income", description: "Uang kas bulanan kelas", amount: 250000, category: "Kas kelas" },
-  { date: "2026-10-03", type: "income", description: "Iuran mingguan wajib", amount: 50000, category: "Iuran kelas" },
+  { date: "2026-10-01", type: "income", description: "Kas OSIS bulanan anggota", amount: 250000, category: "Kas OSIS" },
+  { date: "2026-10-03", type: "income", description: "Iuran rutin mingguan", amount: 50000, category: "Iuran Rutin" },
   { date: "2026-10-05", type: "expense", description: "Membeli alat tulis", amount: 45000, category: "ATK" },
-  { date: "2026-10-07", type: "expense", description: "Konsumsi rapat kelas", amount: 30000, category: "Konsumsi" },
-  { date: "2026-10-10", type: "income", description: "Donasi sponsor kegiatan", amount: 200000, category: "Donasi" },
+  { date: "2026-10-07", type: "expense", description: "Konsumsi rapat OSIS", amount: 30000, category: "Konsumsi" },
+  { date: "2026-10-10", type: "income", description: "Sponsor kegiatan OSIS", amount: 200000, category: "Sponsor" },
   { date: "2026-10-12", type: "expense", description: "Cetak materi kegiatan", amount: 25000, category: "ATK" },
-  { date: "2026-10-15", type: "expense", description: "Hadiah lomba kelas", amount: 75000, category: "Kegiatan" },
-  { date: "2026-10-18", type: "income", description: "Penjualan hasil bazaar", amount: 120000, category: "Donasi" },
+  { date: "2026-10-15", type: "expense", description: "Hadiah lomba OSIS", amount: 75000, category: "Kegiatan" },
+  { date: "2026-10-18", type: "income", description: "Hasil bazaar OSIS", amount: 120000, category: "Hasil Bazaar" },
 ];
 
 export async function seedDemo(): Promise<{ inserted: number; message: string }> {

@@ -221,7 +221,7 @@ function FormBody({ type, initial, onSubmit, onCancel }: FormBodyProps) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder={
-            isIncome ? "cth: Uang kas bulanan" : "cth: Membeli alat tulis"
+            isIncome ? "cth: Kas OSIS bulanan" : "cth: Membeli alat tulis"
           }
           maxLength={200}
           aria-invalid={!!errors.description}

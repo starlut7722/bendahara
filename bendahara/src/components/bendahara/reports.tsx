@@ -148,7 +148,7 @@ export function Reports({ transactions, loading }: ReportsProps) {
   function handleDownload() {
     if (filtered.length === 0) return;
     const csv = transactionsToCSV(filtered);
-    const filename = `laporan-bendahara-${format(range.start, "yyyyMMdd", {
+    const filename = `laporan-kas-osis-${format(range.start, "yyyyMMdd", {
       locale: idLocale,
     })}-${format(range.end, "yyyyMMdd", { locale: idLocale })}.csv`;
     downloadFile(filename, csv);
@@ -164,7 +164,7 @@ export function Reports({ transactions, loading }: ReportsProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 no-print">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-            Laporan Keuangan
+            Laporan Kas OSIS Adikara Darmalaksana
           </h1>
           <p className="text-sm text-muted-foreground">
             Periode: <span className="font-medium text-foreground">{rangeLabel}</span>
@@ -268,7 +268,7 @@ export function Reports({ transactions, loading }: ReportsProps) {
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-base font-semibold">Grafik Pemasukan vs Pengeluaran</h2>
+              <h2 className="text-base font-semibold">Grafik Pemasukan vs Pengeluaran Kas OSIS</h2>
               <p className="text-xs text-muted-foreground">
                 Per {period === "year" ? "bulan" : "hari"}
               </p>
@@ -441,7 +441,7 @@ export function Reports({ transactions, loading }: ReportsProps) {
 
       {/* Footer cetak (judul laporan) - hanya tampil saat print */}
       <div className="hidden print:block text-center text-xs text-muted-foreground mt-4">
-        Laporan dicetak pada {formatTanggal(new Date())} — Aplikasi Bendahara
+        Laporan dicetak pada {formatTanggal(new Date())} — Kas OSIS Adikara Darmalaksana
       </div>
     </div>
   );

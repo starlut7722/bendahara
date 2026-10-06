@@ -14,15 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bendahara - Catatan Keuangan Sederhana",
-  description: "Aplikasi bendahara sederhana untuk mencatat pemasukan, pengeluaran, transaksi, laporan, dan saldo keuangan.",
-  keywords: ["bendahara", "keuangan", "kas", "pemasukan", "pengeluaran", "transaksi", "laporan"],
-  authors: [{ name: "Bendahara App" }],
+  title: "Kas OSIS Adikara Darmalaksana",
+  description: "Aplikasi kas resmi OSIS Adikara Darmalaksana untuk mencatat pemasukan, pengeluaran, transaksi, laporan, dan saldo keuangan.",
+  keywords: ["kas osis", "osis", "adikara darmalaksana", "keuangan", "kas", "pemasukan", "pengeluaran", "transaksi", "laporan", "saldo"],
+  authors: [{ name: "OSIS Adikara Darmalaksana" }],
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Bendahara",
+    title: "Kas OSIS",
   },
   icons: {
     icon: [

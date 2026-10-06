@@ -188,10 +188,10 @@ export default function Home() {
               </div>
               <div className="min-w-0">
                 <h1 className="text-base sm:text-lg font-bold tracking-tight leading-none truncate">
-                  Bendahara
+                  KAS OSIS
                 </h1>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-none truncate">
-                  Catatan Keuangan Sederhana
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-none truncate tracking-wide uppercase">
+                  Adikara Darmalaksana
                 </p>
               </div>
             </div>
@@ -272,7 +272,7 @@ export default function Home() {
       <footer className="mt-auto border-t border-border bg-card/85 backdrop-blur-md no-print hidden md:block">
         <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between text-xs text-muted-foreground">
           <span>
-            © {new Date().getFullYear()} Bendahara · Catatan keuangan sederhana
+            © {new Date().getFullYear()} Kas OSIS Adikara Darmalaksana · Aplikasi Keuangan OSIS
           </span>
           <span className="tabular-nums">
             Saldo:{" "}

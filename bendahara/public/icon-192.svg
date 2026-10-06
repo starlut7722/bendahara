@@ -14,5 +14,5 @@
     <rect x="62" y="104" width="20" height="20" rx="3"/>
     <rect x="112" y="104" width="20" height="20" rx="3"/>
   </g>
-  <text x="96" y="166" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="18" font-weight="700" fill="#ffffff">Bendahara</text>
+  <text x="96" y="166" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="15" font-weight="700" fill="#ffffff">KAS OSIS</text>
 </svg>

@@ -40,13 +40,15 @@ export interface ApiOk<T> {
 
 export type ApiResponse<T> = ApiOk<T> | ApiError;
 
-// Opsi kategori/sumber yang umum dipakai (bisa juga input bebas)
+// Opsi sumber pemasukan OSIS (bisa juga input bebas via "Lainnya")
 export const INCOME_SOURCES = [
-  "Kas kelas",
-  "Iuran kelas",
+  "Kas OSIS",
+  "Iuran Rutin",
   "Donasi",
-  "Sumbangan",
-  "Hasil jualan",
+  "Hasil Bazaar",
+  "Hasil Jualan",
+  "Sponsor",
+  "Kegiatan",
   "Lainnya",
 ];
 

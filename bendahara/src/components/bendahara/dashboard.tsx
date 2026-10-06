@@ -52,6 +52,16 @@ export function Dashboard({
 
   return (
     <div className="animate-fade-in-up space-y-5">
+      {/* Judul halaman Dashboard */}
+      <div>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+          Dashboard
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Ringkasan Keuangan Kas OSIS Adikara Darmalaksana
+        </p>
+      </div>
+
       {/* Hero saldo */}
       <Card className="overflow-hidden border-0 bg-gradient-to-br from-primary to-blue-700 text-primary-foreground shadow-md">
         <CardContent className="p-5 sm:p-6">

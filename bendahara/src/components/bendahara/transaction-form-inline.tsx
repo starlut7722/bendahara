@@ -127,7 +127,7 @@ export function TransactionFormInline({
 
   const title = isIncome ? "Tambah Pemasukan" : "Tambah Pengeluaran"
   const desc = isIncome
-    ? "Catat uang masuk, misalnya kas kelas, iuran, atau donasi."
+    ? "Catat pemasukan kas OSIS, iuran, donasi, atau sponsor."
     : "Catat pengeluaran, misalnya beli ATK, konsumsi, atau kegiatan."
 
   return (
@@ -204,7 +204,7 @@ export function TransactionFormInline({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={
                   isIncome
-                    ? "cth: Uang kas bulanan kelas"
+                    ? "cth: Kas OSIS bulanan"
                     : "cth: Membeli alat tulis"
                 }
                 maxLength={200}
