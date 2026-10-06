@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import {
+  updateTransaction,
+  deleteTransaction,
+  type TxInput,
+} from "@/lib/data";
+import { type TransactionType } from "@/lib/types";
 
-const VALID_TYPES = ["income", "expense"] as const;
-type TxType = (typeof VALID_TYPES)[number];
+const VALID_TYPES: TransactionType[] = ["income", "expense"];
 
 function isString(v: unknown): v is string {
   return typeof v === "string";
@@ -12,24 +16,23 @@ function validatePayload(body: any) {
   const errors: Record<string, string> = {};
 
   const type = isString(body?.type) ? body.type.trim() : "";
-  if (!VALID_TYPES.includes(type as TxType)) {
+  if (!VALID_TYPES.includes(type as TransactionType)) {
     errors.type = "Jenis transaksi tidak valid.";
   }
 
   const dateStr = isString(body?.date) ? body.date.trim() : "";
-  let dateObj: Date | null = null;
   if (!dateStr) {
     errors.date = "Tanggal wajib diisi.";
   } else {
     const parsed = new Date(dateStr);
     if (isNaN(parsed.getTime())) {
       errors.date = "Tanggal tidak valid.";
-    } else {
-      dateObj = parsed;
     }
   }
 
-  const description = isString(body?.description) ? body.description.trim() : "";
+  const description = isString(body?.description)
+    ? body.description.trim()
+    : "";
   if (!description) {
     errors.description = "Keterangan wajib diisi.";
   } else if (description.length > 200) {
@@ -54,8 +57,8 @@ function validatePayload(body: any) {
     errors,
     data: ok
       ? {
-          type: type as TxType,
-          date: dateObj as Date,
+          type: type as TransactionType,
+          date: dateStr,
           description,
           amount: Math.round(amount),
           category: category || "Lainnya",
@@ -87,24 +90,23 @@ export async function PUT(
       );
     }
 
-    const existing = await db.transaction.findUnique({ where: { id } });
-    if (!existing) {
-      return NextResponse.json(
-        { ok: false, error: "Transaksi tidak ditemukan." },
-        { status: 404 }
-      );
+    const input: TxInput = result.data;
+    try {
+      const updated = await updateTransaction(id, input);
+      return NextResponse.json({ ok: true, data: updated });
+    } catch (e: any) {
+      if (/tidak ditemukan/i.test(e?.message ?? "")) {
+        return NextResponse.json(
+          { ok: false, error: "Transaksi tidak ditemukan." },
+          { status: 404 }
+        );
+      }
+      throw e;
     }
-
-    const updated = await db.transaction.update({
-      where: { id },
-      data: result.data,
-    });
-
-    return NextResponse.json({ ok: true, data: updated });
   } catch (err: any) {
     console.error("[PUT /api/transactions/[id]]", err);
     return NextResponse.json(
-      { ok: false, error: "Gagal memperbarui transaksi." },
+      { ok: false, error: err?.message || "Gagal memperbarui transaksi." },
       { status: 500 }
     );
   }
@@ -118,21 +120,22 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    const existing = await db.transaction.findUnique({ where: { id } });
-    if (!existing) {
-      return NextResponse.json(
-        { ok: false, error: "Transaksi tidak ditemukan." },
-        { status: 404 }
-      );
+    try {
+      await deleteTransaction(id);
+      return NextResponse.json({ ok: true });
+    } catch (e: any) {
+      if (/tidak ditemukan/i.test(e?.message ?? "")) {
+        return NextResponse.json(
+          { ok: false, error: "Transaksi tidak ditemukan." },
+          { status: 404 }
+        );
+      }
+      throw e;
     }
-
-    await db.transaction.delete({ where: { id } });
-
-    return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error("[DELETE /api/transactions/[id]]", err);
     return NextResponse.json(
-      { ok: false, error: "Gagal menghapus transaksi." },
+      { ok: false, error: err?.message || "Gagal menghapus transaksi." },
       { status: 500 }
     );
   }

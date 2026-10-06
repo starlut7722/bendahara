@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import {
+  listTransactions,
+  createTransaction,
+  type TxInput,
+} from "@/lib/data";
+import { type TransactionType } from "@/lib/types";
 
-// Tipe transaksi yang valid
-const VALID_TYPES = ["income", "expense"] as const;
-type TxType = (typeof VALID_TYPES)[number];
+const VALID_TYPES: TransactionType[] = ["income", "expense"];
 
 function isString(v: unknown): v is string {
   return typeof v === "string";
@@ -15,40 +18,34 @@ function isString(v: unknown): v is string {
  * - keterangan wajib diisi
  * - tanggal wajib diisi & valid
  * - type harus "income" | "expense"
- * Mengembalikan { ok, data?, error? }
  */
 function validatePayload(body: any) {
   const errors: Record<string, string> = {};
 
-  // type
   const type = isString(body?.type) ? body.type.trim() : "";
-  if (!VALID_TYPES.includes(type as TxType)) {
+  if (!VALID_TYPES.includes(type as TransactionType)) {
     errors.type = "Jenis transaksi tidak valid.";
   }
 
-  // date
   const dateStr = isString(body?.date) ? body.date.trim() : "";
-  let dateObj: Date | null = null;
   if (!dateStr) {
     errors.date = "Tanggal wajib diisi.";
   } else {
     const parsed = new Date(dateStr);
     if (isNaN(parsed.getTime())) {
       errors.date = "Tanggal tidak valid.";
-    } else {
-      dateObj = parsed;
     }
   }
 
-  // description
-  const description = isString(body?.description) ? body.description.trim() : "";
+  const description = isString(body?.description)
+    ? body.description.trim()
+    : "";
   if (!description) {
     errors.description = "Keterangan wajib diisi.";
   } else if (description.length > 200) {
     errors.description = "Keterangan maksimal 200 karakter.";
   }
 
-  // amount
   let amount = NaN;
   if (body?.amount === undefined || body?.amount === null || body?.amount === "") {
     errors.amount = "Nominal wajib diisi.";
@@ -59,7 +56,6 @@ function validatePayload(body: any) {
     }
   }
 
-  // category (boleh kosong, default "Lainnya")
   const category = isString(body?.category) ? body.category.trim() : "";
 
   const ok = Object.keys(errors).length === 0;
@@ -68,8 +64,8 @@ function validatePayload(body: any) {
     errors,
     data: ok
       ? {
-          type: type as TxType,
-          date: dateObj as Date,
+          type: type as TransactionType,
+          date: dateStr,
           description,
           amount: Math.round(amount),
           category: category || "Lainnya",
@@ -84,43 +80,25 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get("type"); // income | expense
-    const search = searchParams.get("search")?.trim();
-    const startDate = searchParams.get("startDate");
-    const endDate = searchParams.get("endDate");
+    const search = searchParams.get("search")?.trim() || undefined;
+    const startDate = searchParams.get("startDate") || undefined;
+    const endDate = searchParams.get("endDate") || undefined;
     const limitRaw = searchParams.get("limit");
     const limit = limitRaw ? parseInt(limitRaw, 10) : undefined;
 
-    const where: any = {};
-    if (type && VALID_TYPES.includes(type as TxType)) {
-      where.type = type;
-    }
-    if (search) {
-      where.OR = [
-        { description: { contains: search } },
-        { category: { contains: search } },
-      ];
-    }
-    if (startDate || endDate) {
-      where.date = {};
-      if (startDate) where.date.gte = new Date(startDate);
-      if (endDate) {
-        const ed = new Date(endDate);
-        ed.setHours(23, 59, 59, 999);
-        where.date.lte = ed;
-      }
-    }
-
-    const transactions = await db.transaction.findMany({
-      where,
-      orderBy: [{ date: "desc" }, { createdAt: "desc" }],
-      ...(limit && Number.isFinite(limit) ? { take: limit } : {}),
+    const transactions = await listTransactions({
+      type: type && VALID_TYPES.includes(type as TransactionType) ? type : undefined,
+      search,
+      startDate,
+      endDate,
+      limit,
     });
 
     return NextResponse.json({ ok: true, data: transactions });
   } catch (err: any) {
     console.error("[GET /api/transactions]", err);
     return NextResponse.json(
-      { ok: false, error: "Gagal memuat data transaksi." },
+      { ok: false, error: err?.message || "Gagal memuat data transaksi." },
       { status: 500 }
     );
   }
@@ -145,15 +123,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const created = await db.transaction.create({
-      data: result.data,
-    });
+    const input: TxInput = result.data;
+    const created = await createTransaction(input);
 
     return NextResponse.json({ ok: true, data: created });
   } catch (err: any) {
     console.error("[POST /api/transactions]", err);
     return NextResponse.json(
-      { ok: false, error: "Gagal menyimpan transaksi." },
+      { ok: false, error: err?.message || "Gagal menyimpan transaksi." },
       { status: 500 }
     );
   }

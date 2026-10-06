@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { getStats } from "@/lib/data";
 
 // GET /api/stats
 // Menghitung saldo dari data transaksi (tidak disimpan manual).
@@ -8,49 +8,16 @@ import { db } from "@/lib/db";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const startDate = searchParams.get("startDate");
-    const endDate = searchParams.get("endDate");
+    const startDate = searchParams.get("startDate") || undefined;
+    const endDate = searchParams.get("endDate") || undefined;
 
-    const where: any = {};
-    if (startDate || endDate) {
-      where.date = {};
-      if (startDate) where.date.gte = new Date(startDate);
-      if (endDate) {
-        const ed = new Date(endDate);
-        ed.setHours(23, 59, 59, 999);
-        where.date.lte = ed;
-      }
-    }
+    const stats = await getStats({ startDate, endDate });
 
-    // Ambil semua transaksi sesuai filter, lalu agregat di JS agar bisa
-    // mendapat total income & total expense sekaligus (SQLite聚合 terbatas).
-    const txs = await db.transaction.findMany({
-      where,
-      select: { type: true, amount: true, date: true },
-    });
-
-    const totalIncome = txs
-      .filter((t) => t.type === "income")
-      .reduce((s, t) => s + t.amount, 0);
-    const totalExpense = txs
-      .filter((t) => t.type === "expense")
-      .reduce((s, t) => s + t.amount, 0);
-    const balance = totalIncome - totalExpense;
-    const count = txs.length;
-
-    return NextResponse.json({
-      ok: true,
-      data: {
-        totalIncome,
-        totalExpense,
-        balance,
-        count,
-      },
-    });
+    return NextResponse.json({ ok: true, data: stats });
   } catch (err: any) {
     console.error("[GET /api/stats]", err);
     return NextResponse.json(
-      { ok: false, error: "Gagal memuat ringkasan." },
+      { ok: false, error: err?.message || "Gagal memuat ringkasan." },
       { status: 500 }
     );
   }
